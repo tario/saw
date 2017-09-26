@@ -1,19 +1,3 @@
-function loadSound(url) {
-  return new Promise(function(resolve, reject) {
-    var request = new XMLHttpRequest();
-    request.open('GET', url, true);
-    request.responseType = 'arraybuffer';
-
-    request.onload = function() {
-      context.decodeAudioData(request.response, function(buffer) {
-        resolve(buffer);
-      });
-    }
-    request.send();
-  });
-
-}
-
 var createPhaser = function(destination) {
   var merger = context.createChannelMerger(2);
   merger.connect(destination);
@@ -97,17 +81,6 @@ osc.connect(
   scale(phaser2.l, x, y)
 );
 osc.start();
-
-function setupBuffer(buffer) {
-  window.playAudio = function() {
-    var source = context.createBufferSource();
-    source.buffer = buffer;
-    source.connect(pitchShift1);
-    source.connect(pitchShift2);
-    source.start(0);  
-  };
-
-};
 
 navigator.mediaDevices.getUserMedia({ audio: true, video: false})
   .then(function(stream) {
