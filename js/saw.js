@@ -70,12 +70,12 @@ var phaser2 = createPhaser(context.destination)
 var pitchShift2 = PitchShift(context)
 pitchShift2.connect(phaser2.i)
 
-pitchShift1.transpose = -15;
+pitchShift1.transpose = -12;
 pitchShift1.wet.value = 1;
 pitchShift1.dry.value = 0;
 
-pitchShift2.transpose = -7;
-pitchShift2.wet.value = 0.3;
+pitchShift2.transpose = -3;
+pitchShift2.wet.value = 0.6;
 pitchShift2.dry.value = 0;
 
 var osc = context.createOscillator();
