@@ -1,5 +1,6 @@
 <html>
 <head>
+  <script src="lib/recorder/WebAudioRecorder.min.js"></script>
   <script src="lib/constant-source-node.js"></script>
   <script>ConstantSourceNode.polyfill();</script>
   <script src="lib/pitchshift.js"></script>
@@ -7,5 +8,6 @@
 </head>
 <body>
 <h1>USE MICROPHONE</h1>
+<button id="record_button" onclick="record()">RECORD</button>
 </body>
 </html>

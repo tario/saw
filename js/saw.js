@@ -46,13 +46,17 @@ var scale = function(destination, base, top) {
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 var context = new AudioContext();
 
-var phaser1 = createPhaser(context.destination)
-var pitchShift1 = PitchShift(context)
+var gainNode = context.createGain();
+gainNode.gain.value = 1.0;
+gainNode.connect(context.destination);
+
+var phaser1 = createPhaser(gainNode);
+var pitchShift1 = PitchShift(context);
 pitchShift1.connect(phaser1.i)
 
-var phaser2 = createPhaser(context.destination)
-var pitchShift2 = PitchShift(context)
-pitchShift2.connect(phaser2.i)
+var phaser2 = createPhaser(gainNode);
+var pitchShift2 = PitchShift(context);
+pitchShift2.connect(phaser2.i);
 
 pitchShift1.transpose = -10;
 pitchShift1.wet.value = 1;
@@ -89,3 +93,38 @@ navigator.mediaDevices.getUserMedia({ audio: true, video: false})
       source.connect(pitchShift2);
 
   })
+
+
+var currentRecorder;
+
+window.record = function() {
+
+  if (currentRecorder) {
+    currentRecorder.finishRecording();
+    document.getElementById("record_button").innerText = "RECORD";
+
+    currentRecorder = null;
+
+  } else {
+    currentRecorder = new WebAudioRecorder(gainNode, {
+      workerDir: "lib/recorder/worker/",
+      encoding: 'wav',
+      numChannels: 2
+    });
+
+    currentRecorder.onComplete = function(recorder, blob) {
+      var a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style = "display: none";
+
+      var url  = window.URL.createObjectURL(blob);
+      a.href = url;
+      a.download = 'saw.wav';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    };
+
+    currentRecorder.startRecording();
+    document.getElementById("record_button").innerText = "STOP RECORDING";
+  }
+};
