@@ -86,12 +86,34 @@ osc.connect(
 );
 osc.start();
 
+var input = context.createGain();
+input.gain.value = 1.0;
+
+input.connect(pitchShift1);
+input.connect(pitchShift2);
+
+compressor = context.createDynamicsCompressor();
+compressor.threshold.value = -50;
+compressor.knee.value = 40;
+compressor.ratio.value = 12;
+compressor.reduction.value = -20;
+compressor.attack.value = 0;
+compressor.release.value = 0.25;
+
+filter = context.createBiquadFilter();
+filter.Q.value = 8.30;
+filter.frequency.value = 355;
+filter.gain.value = 3.0;
+filter.type = 'bandpass';
+filter.connect(compressor);
+
+compressor.connect(input);
+filter.connect(input);
+
 navigator.mediaDevices.getUserMedia({ audio: true, video: false})
   .then(function(stream) {
       var source = context.createMediaStreamSource(stream);
-      source.connect(pitchShift1);
-      source.connect(pitchShift2);
-
+      source.connect(filter);
   })
 
 
