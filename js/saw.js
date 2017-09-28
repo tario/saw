@@ -101,7 +101,7 @@ window.record = function() {
 
   if (currentRecorder) {
     currentRecorder.finishRecording();
-    document.getElementById("record_button").innerText = "RECORD";
+    document.getElementById("record_button").innerHTML = "<b>\u25CF</b>RECORD";
 
     currentRecorder = null;
 
