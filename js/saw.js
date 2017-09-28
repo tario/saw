@@ -58,11 +58,17 @@ var phaser2 = createPhaser(gainNode);
 var pitchShift2 = PitchShift(context);
 pitchShift2.connect(phaser2.i);
 
-pitchShift1.transpose = -10;
+
+var transposeSetting = {
+  tr1: -10,
+  tr2: -5
+};
+
+pitchShift1.transpose = transposeSetting.tr1;
 pitchShift1.wet.value = 1;
 pitchShift1.dry.value = 0;
 
-pitchShift2.transpose = -5;
+pitchShift2.transpose = transposeSetting.tr2;
 pitchShift2.wet.value = 0.6;
 pitchShift2.dry.value = 0;
 
@@ -161,20 +167,29 @@ var bind = function(elementId, recv, propertyName, onChange) {
   };
 };
 
-var u = function(id) {
+var u = function(id, onChange) {
   var el = document.getElementById(id);
   return function(newVal) {
     el.innerText = newVal.toFixed(2);
+    if (onChange) onChange(newVal);
   };
+};
+
+var setPitch1 = function(newVal) {
+  pitchShift1.transpose = newVal;
+};
+
+var setPitch2 = function(newVal) {
+  pitchShift2.transpose = newVal;
 };
 
 // data bindings
 window.onload = function() {
-  bind("pitch1-transpose", pitchShift1, "transpose", u("pitch1-transpose-display"));
+  bind("pitch1-transpose", transposeSetting, "tr1", u("pitch1-transpose-display", setPitch1));
   bind("pitch1-wet", pitchShift1.wet, "value", u("pitch1-wet-display"));
   bind("pitch1-dry", pitchShift1.dry, "value", u("pitch1-dry-display"));
 
-  bind("pitch2-transpose", pitchShift2, "transpose", u("pitch2-transpose-display"));
+  bind("pitch2-transpose", transposeSetting, "tr2", u("pitch2-transpose-display", setPitch2));
   bind("pitch2-wet", pitchShift2.wet, "value", u("pitch2-wet-display"));
   bind("pitch2-dry", pitchShift2.dry, "value", u("pitch2-dry-display"));
 
