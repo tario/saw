@@ -11,5 +11,58 @@
 <body>
 <h1>USE MICROPHONE</h1>
 <button id="record_button" onclick="record()"><b>●</b>RECORD</button>
+
+<div class="controls">
+
+  <h3>PitchShift1</h3>
+
+  <div class="row">
+    <div class="data-block">
+      <div class="data-label">Transpose</div>
+      <input type="range" min="-20" max="20" class="slider" id="pitch1-transpose">
+      <b id="pitch1-transpose-display" class="display"></b>
+    </div>
+    <div class="data-block">
+      <div class="data-label">WET Volume</div>
+      <input type="range" min="0" max="1" step="0.01" class="slider" id="pitch1-wet">
+      <b id="pitch1-wet-display" class="display"></b>
+    </div>
+    <div class="data-block">
+      <div class="data-label">DRY Volume</div>
+      <input type="range" min="0" max="1" step="0.01" class="slider" id="pitch1-dry">
+      <b id="pitch1-dry-display" class="display"></b>
+    </div>
+  </div>
+  <h3>PitchShift2</h3>
+
+  <div class="row">
+    <div class="data-block">
+      <div class="data-label">Transpose</div>
+      <input type="range" min="-20" max="20" class="slider" id="pitch2-transpose">
+      <b id="pitch2-transpose-display" class="display"></b>
+    </div>
+    <div class="data-block">
+      <div class="data-label">WET Volume</div>
+      <input type="range" min="0" max="1" step="0.01" class="slider" id="pitch2-wet">
+      <b id="pitch2-wet-display" class="display"></b>
+    </div>
+    <div class="data-block">
+      <div class="data-label">DRY Volume</div>
+      <input type="range" min="0" max="1" step="0.01" class="slider" id="pitch2-dry">
+      <b id="pitch2-dry-display" class="display"></b>
+    </div>
+  </div>
+
+  <h3>Phaser</h3>
+
+  <div class="row">
+    <div class="data-block">
+      <div class="data-label">Frequency</div>
+      <input type="range" min="0.1" max="10" step="0.01" class="slider" id="phaser-freq">
+      <b id="phaser-freq-display" class="display"></b>
+    </div>
+  </div>
+
+</div>
 </body>
 </html>

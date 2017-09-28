@@ -128,3 +128,33 @@ window.record = function() {
     document.getElementById("record_button").innerText = "STOP RECORDING";
   }
 };
+
+var bind = function(elementId, recv, propertyName, onChange) {
+  var el = document.getElementById(elementId);
+  el.value = recv[propertyName];
+  onChange(recv[propertyName]);
+  el.onchange = function() {
+    recv[propertyName] = parseFloat(el.value);
+    onChange(recv[propertyName]);
+  };
+};
+
+var u = function(id) {
+  var el = document.getElementById(id);
+  return function(newVal) {
+    el.innerText = newVal.toFixed(2);
+  };
+};
+
+// data bindings
+window.onload = function() {
+  bind("pitch1-transpose", pitchShift1, "transpose", u("pitch1-transpose-display"));
+  bind("pitch1-wet", pitchShift1.wet, "value", u("pitch1-wet-display"));
+  bind("pitch1-dry", pitchShift1.dry, "value", u("pitch1-dry-display"));
+
+  bind("pitch2-transpose", pitchShift2, "transpose", u("pitch2-transpose-display"));
+  bind("pitch2-wet", pitchShift2.wet, "value", u("pitch2-wet-display"));
+  bind("pitch2-dry", pitchShift2.dry, "value", u("pitch2-dry-display"));
+
+  bind("phaser-freq", osc.frequency, "value", u("phaser-freq-display"));
+};
