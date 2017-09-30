@@ -114,7 +114,6 @@ filter.type = 'bandpass';
 filter.connect(compressor);
 
 compressor.connect(input);
-filter.connect(input);
 
 navigator.mediaDevices.getUserMedia({ audio: true, video: false})
   .then(function(stream) {
