@@ -115,45 +115,54 @@ filter.connect(compressor);
 
 compressor.connect(input);
 
-navigator.mediaDevices.getUserMedia({ audio: true, video: false})
-  .then(function(stream) {
-      var source = context.createMediaStreamSource(stream);
-      source.connect(filter);
-  })
+var recording = false;
+function ensureRecording() {
+  if (recording) return;
+  recording = true;
+  return navigator.mediaDevices.getUserMedia({ audio: true, video: false})
+    .then(function(stream) {
+        var source = context.createMediaStreamSource(stream);
+        source.connect(filter);
+    });
+};
 
 
 var currentRecorder;
 
 window.record = function() {
+  context.resume()
+    .then(ensureRecording)
+    .then(function() {
+      if (currentRecorder) {
+        currentRecorder.finishRecording();
+        document.getElementById("record_button").innerHTML = "<b>\u25CF</b>RECORD";
 
-  if (currentRecorder) {
-    currentRecorder.finishRecording();
-    document.getElementById("record_button").innerHTML = "<b>\u25CF</b>RECORD";
+        currentRecorder = null;
 
-    currentRecorder = null;
+      } else {
+        currentRecorder = new WebAudioRecorder(gainNode, {
+          workerDir: "lib/recorder/worker/",
+          encoding: 'wav',
+          numChannels: 2
+        });
 
-  } else {
-    currentRecorder = new WebAudioRecorder(gainNode, {
-      workerDir: "lib/recorder/worker/",
-      encoding: 'wav',
-      numChannels: 2
+        currentRecorder.onComplete = function(recorder, blob) {
+          var a = document.createElement("a");
+          document.body.appendChild(a);
+          a.style = "display: none";
+
+          var url  = window.URL.createObjectURL(blob);
+          a.href = url;
+          a.download = 'saw.wav';
+          a.click();
+          window.URL.revokeObjectURL(url);
+        };
+
+        currentRecorder.startRecording();
+        document.getElementById("record_button").innerText = "STOP RECORDING";
+      }
+
     });
-
-    currentRecorder.onComplete = function(recorder, blob) {
-      var a = document.createElement("a");
-      document.body.appendChild(a);
-      a.style = "display: none";
-
-      var url  = window.URL.createObjectURL(blob);
-      a.href = url;
-      a.download = 'saw.wav';
-      a.click();
-      window.URL.revokeObjectURL(url);
-    };
-
-    currentRecorder.startRecording();
-    document.getElementById("record_button").innerText = "STOP RECORDING";
-  }
 };
 
 var bind = function(elementId, recv, propertyName, onChange) {
