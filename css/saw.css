@@ -41,4 +41,5 @@ h3 {
 .data-block {
   display: inline-block;
   width: 150px;
+  transition: opacity 0.5s;
 }

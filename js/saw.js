@@ -72,25 +72,46 @@ pitchShift2.transpose = transposeSetting.tr2;
 pitchShift2.wet.value = 0.6;
 pitchShift2.dry.value = 0;
 
+var constantNode = context.createConstantSource();
+var intermediateNode = context.createGain();
 var osc = context.createOscillator();
 var x = 0.0;
 var y = 1.0;
 
 osc.type = "sine";
 osc.frequency.value = 0.4;
-osc.connect(
+intermediateNode.connect(
   scale(phaser1.r, x, y)
 );
-osc.connect(
+intermediateNode.connect(
   scale(phaser1.l, y, x)
 );
-osc.connect(
+intermediateNode.connect(
   scale(phaser2.r, y, x)
 );
-osc.connect(
+intermediateNode.connect(
   scale(phaser2.l, x, y)
 );
+
 osc.start();
+
+var connectOscHandler = function(node) {
+  try {
+    osc.disconnect(intermediateNode);
+  } catch (e) {
+    // if the node is not already connected, it will throw an error
+  }
+
+  try {
+    constantNode.disconnect(intermediateNode);
+  } catch (e) {
+    // if the node is not already connected, it will throw an error
+  }
+
+  node.connect(intermediateNode);
+};
+
+connectOscHandler(osc);
 
 var input = context.createGain();
 input.gain.value = 1.0;
@@ -202,4 +223,17 @@ window.onload = function() {
   bind("pitch2-dry", pitchShift2.dry, "value", u("pitch2-dry-display"));
 
   bind("phaser-freq", osc.frequency, "value", u("phaser-freq-display"));
+
+  var el = document.getElementById("phaser-enabled");
+  el.onchange = function() {
+    if (el.checked) {
+      var freqSetup = document.getElementById("freq-setup");
+      freqSetup.style.opacity = "1.0";
+      connectOscHandler(osc);
+    } else {
+      var freqSetup = document.getElementById("freq-setup");
+      freqSetup.style.opacity = "0.0";
+      connectOscHandler(constantNode);
+    }
+  };
 };
